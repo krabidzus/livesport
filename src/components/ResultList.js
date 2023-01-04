@@ -2,7 +2,7 @@ import * as React from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { ImageListItem, ListItemButton } from "@mui/material";
+import { ImageListItem, ListItemButton, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 export default function ResultList(props) {
@@ -13,11 +13,11 @@ export default function ResultList(props) {
       {props.data.map((row) => (
         <ListItem divider>
           <ImageListItem key={row.id}>
-              <img
-                src={`https://www.livesport.cz/res/image/data/${row.images[0]?.path}`}
-                alt={"no photo"}
-              />
-          </ImageListItem >
+            <img
+              src={`https://www.livesport.cz/res/image/data/${row.images[0]?.path}`}
+              alt={"žádná fotka"}
+            />
+          </ImageListItem>
           <ListItemButton
             onClick={() => {
               props.setDetail(row);
@@ -26,7 +26,7 @@ export default function ResultList(props) {
           >
             <ListItemText
               primary={row.name}
-              secondary={row.defaultCountry.name}
+              secondary={row.sport.name}
             />
           </ListItemButton>
         </ListItem>
