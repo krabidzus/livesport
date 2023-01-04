@@ -1,24 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Search from "../src/pages/Search";
+import Detail from "../src/pages/Detail";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React, { useState } from 'react';
 
 function App() {
+  const [detail, setDetail] = useState({});
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route exact path="/" element={<Search setDetail={setDetail} />} />
+        <Route exact path="/detail" element={<Detail detail={detail} />} />
+      </Routes>
+    </Router>
   );
 }
 
