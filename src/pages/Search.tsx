@@ -9,7 +9,6 @@ import {
   Grid,
   IconButton,
   InputAdornment,
-  InputLabel,
   MenuItem,
   Select,
   TextField,
@@ -26,18 +25,18 @@ export default function Search(props) {
   const [searchBtn, setSearchBtn] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [filterSport, setFilterSport] = useState<number>(0);
-  const [filterTypes, setFilterTypes] = useState<number>(0);
+  const [filterSport, setFilterSport] = useState<number>(11);
+  const [filterTypes, setFilterTypes] = useState<number>(11);
 
   function getSportIds() {
-    if (filterSport === 0) {
+    if (filterSport === 0 || filterSport === 11) {
       return "1,2,3,4,5,6,7,8,9";
     }
     return filterSport;
   }
 
   function getTypesIds() {
-    if (filterTypes === 0) {
+    if (filterTypes === 0 || filterTypes === 11) {
       return "1,2,3,4";
     }
     return filterTypes;
@@ -48,20 +47,16 @@ export default function Search(props) {
       setLoading(true);
       fetch(
         `https://s.livesport.services/api/v2/search?type-ids=${getTypesIds()}&project-type-id=1&project-id=602&lang-id=1&q=${search}&sport-ids=${getSportIds()}`
-        // `https://s.livesport.services/api/v2/search?type-ids=2,3&project-type-id=1&project-id=602&lang-id=1&q={search}&sport-ids=1,2,3,4,5,6,7,8,9&q=lfjdsf`
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
-          // TODO pouze nekdy
           if (data.code === 101 || data.code === 100 || data.code === 110) {
             setError(true);
           }
           setResult(data);
           setLoading(false);
         })
-        .catch((err) => {
-          console.log(err.message);
+        .catch(() => {
           setError(true);
           setLoading(false);
         });
@@ -76,6 +71,10 @@ export default function Search(props) {
     setFilterTypes(e.target.value);
   };
 
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
   return (
     <Container component="main">
       <Box
@@ -86,32 +85,34 @@ export default function Search(props) {
           alignItems: "center",
         }}
       >
+        {/*Text name of the app*/}
         <Box component="form" noValidate sx={{ mt: 3, textAlign: "center" }}>
           <Grid container spacing={1}>
             <Grid item xs={16} sm={12}>
-              <Typography variant="h3" gutterBottom>Vyhledejte svůj oblíbený</Typography>
-              <Typography  variant="h3" gutterBottom>tým, soutěž nebo hráče</Typography>
+              <Typography variant="h3" gutterBottom sx={{ fontWeight: "bold" }}>
+                Vyhledejte svůj oblíbený
+              </Typography>
+              <Typography variant="h3" gutterBottom sx={{ fontWeight: "bold" }}>
+                tým, soutěž nebo hráče
+              </Typography>
             </Grid>
           </Grid>
         </Box>
 
-        <Box component="form" noValidate sx={{ mt: 3 }}>
-          <Grid container spacing={1}>
+        {/*Search input and button for search*/}
+        <Box component="form" noValidate sx={{ mt: 3, marginLeft: 5 }}>
+          <Grid container spacing={2}>
             <Grid item xs={10} sm={8}>
               <TextField
                 sx={{
                   marginRight: 5,
                   width: 300,
-                  "& fieldset": {
-                    borderRadius: "30px",
-                  },
                 }}
                 id="outlined-basic"
-                //label="Vyhledávání"
                 placeholder={"Vyhledávání"}
                 variant="outlined"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={handleSearch}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -130,7 +131,6 @@ export default function Search(props) {
               <Button
                 sx={{
                   height: 54,
-                  borderRadius: 30,
                 }}
                 variant="contained"
                 size="large"
@@ -142,18 +142,24 @@ export default function Search(props) {
           </Grid>
         </Box>
 
-        <Box component="form" noValidate sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={16} sm={6}>
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="sports-label">Sporty</InputLabel>
+        {/*Filters*/}
+        <Box component="form" noValidate sx={{ mt: 3, marginLeft: -12 }}>
+          <Grid container spacing={1}>
+            <Grid item xs={16} sm={2} sx={{ marginTop: 2 }}>
+              <Typography>Filtry</Typography>
+            </Grid>
+            <Grid item xs={16} sm={5}>
+              <FormControl sx={{ m: 1, minWidth: 120 }}>
                 <Select
                   labelId="filter-sport"
                   id="filter-type"
-                  label="Sporty"
                   value={Number(filterSport)}
                   onChange={handleChangeSport}
+                  sx={{ height: 40 }}
                 >
+                  <MenuItem disabled value={11}>
+                    <em>Sporty</em>
+                  </MenuItem>
                   <MenuItem value={0}>Vše</MenuItem>
                   <MenuItem value={1}>Fotbal</MenuItem>
                   <MenuItem value={2}>Tenis</MenuItem>
@@ -167,16 +173,18 @@ export default function Search(props) {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={16} sm={6}>
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="types-label">Typy</InputLabel>
+            <Grid item xs={16} sm={5}>
+              <FormControl sx={{ m: 1, minWidth: 120 }}>
                 <Select
                   labelId="types-label"
                   id="types"
-                  label="Typy"
                   value={Number(filterTypes)}
                   onChange={handleChangeTypes}
+                  sx={{ height: 40 }}
                 >
+                  <MenuItem disabled value={11}>
+                    <em>Typy</em>
+                  </MenuItem>
                   <MenuItem value={0}>Vše</MenuItem>
                   <MenuItem value={1}>Soutěže</MenuItem>
                   <MenuItem value={2}>Týmy</MenuItem>
@@ -188,20 +196,28 @@ export default function Search(props) {
           </Grid>
         </Box>
 
+        {/*Errors, loadings and list of results*/}
         {error ? (
-          <Box component="form" noValidate sx={{ mt: 3 }}>
+          <Box component="form" noValidate sx={{ mt: 3, marginLeft: -1 }}>
             <Grid container spacing={2}>
               <Grid item xs={16} sm={12}>
-                <Alert severity="error">
+                <Alert
+                  sx={{ width: 380 }}
+                  severity="error"
+                  action={
+                    <Button
+                      color="error"
+                      onClick={() => {
+                        setResult([]);
+                        setError(false);
+                        setSearchBtn(!searchBtn);
+                      }}
+                    >
+                      Obnovit
+                    </Button>
+                  }
+                >
                   Data se nepodařilo načíst!
-                  <Button
-                    onClick={() => {
-                      setResult([]);
-                      setError(false);
-                    }}
-                  >
-                    Obnovit
-                  </Button>
                 </Alert>
               </Grid>
             </Grid>
@@ -210,7 +226,9 @@ export default function Search(props) {
           <Box component="form" noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={16} sm={12}>
-                <Alert severity="info">Načítání</Alert>
+                <Alert sx={{ width: 380 }} severity="info">
+                  Načítání
+                </Alert>
               </Grid>
             </Grid>
           </Box>

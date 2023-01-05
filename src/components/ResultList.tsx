@@ -11,7 +11,7 @@ export default function ResultList(props) {
   return (
     <List sx={{ width: 500, bgcolor: "background.paper" }}>
       {props.data.map((row) => (
-        <ListItem divider key={row.id} sx={{ height: 90 }}>
+        <ListItem divider key={row.id} sx={{ height: 70 }}>
           <ImageListItem>
             <img
               style={{ width: 60, height: 60 }}
