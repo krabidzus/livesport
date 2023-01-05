@@ -1,8 +1,8 @@
 import "./App.css";
-import Search from "../src/pages/Search";
-import Detail from "../src/pages/Detail";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import React, { useState } from 'react';
+import Search from "./pages/Search.tsx";
+import Detail from "./pages/Detail.tsx";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
   const [detail, setDetail] = useState({});
